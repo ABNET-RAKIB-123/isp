@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fiber Network Designer</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    #canvas {
+      width: 100%;
+      height: 90vh;
+      position: relative;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+    }
+    .device {
+      position: absolute;
+      cursor: move;
+      user-select: none;
+      text-align: center;
+    }
+    .device img {
+      width: 50px;
+    }
+    svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+    svg line {
+      stroke-width: 2;
+    }
+    svg text {
+      pointer-events: auto;
+    }
+    .cable-remove {
+      fill: red;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .cable-label {
+      fill: black;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row mt-3">
+    <div class="col-md-3">
+      <h5>Devices</h5>
+      <button class="btn btn-sm btn-outline-primary" onclick="addDevice('Mikrotik')">Mikrotik</button>
+      <button class="btn btn-sm btn-outline-secondary" onclick="addDevice('Switch')">Switch</button>
+      <button class="btn btn-sm btn-outline-success" onclick="addDevice('OLT')">OLT</button>
+      <hr />
+      <h5>Cable Type</h5>
+      <select id="cableType" class="form-select">
+        <option value="Fiber">Fiber</option>
+        <option value="Patch">Patch</option>
+        <option value="UTP">UTP</option>
+      </select>
+    </div>
+    <div class="col-md-9">
+      <div id="canvas">
+        <svg id="cableLayer" width="100%" height="100%"></svg>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let devices = [];
+let cables = [];
+let cableStart = null;
+
+function addDevice(type) {
+  const canvas = document.getElementById('canvas');
+  const div = document.createElement('div');
+  div.className = 'device';
+  div.setAttribute('data-type', type);
+  div.style.left = '100px';
+  div.style.top = '100px';
+  div.innerHTML = `
+    <img src="https://via.placeholder.com/50?text=${type}" /><br/>
+    <small>${type}</small>
+  `;
+  canvas.appendChild(div);
+  makeDraggable(div);
+  devices.push(div);
+
+  div.addEventListener('click', () => {
+    if (!cableStart) {
+      cableStart = div;
+    } else {
+      if (cableStart !== div) {
+        drawCable(cableStart, div, document.getElementById('cableType').value);
+        cableStart = null;
+      }
+    }
+  });
+}
+
+function makeDraggable(el) {
+  let offsetX, offsetY;
+  el.onmousedown = function (e) {
+    offsetX = e.clientX - el.offsetLeft;
+    offsetY = e.clientY - el.offsetTop;
+    document.onmousemove = function (e) {
+      el.style.left = (e.clientX - offsetX) + 'px';
+      el.style.top = (e.clientY - offsetY) + 'px';
+      updateCables();
+    };
+    document.onmouseup = function () {
+      document.onmousemove = null;
+      document.onmouseup = null;
+    };
+  };
+}
+
+function drawCable(from, to, type) {
+  const svg = document.getElementById('cableLayer');
+  const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  const removeMark = document.createElementNS("http://www.w3.org/2000/svg", "text");
+
+  let color = 'black';
+  if (type === 'Fiber') color = 'blue';
+  else if (type === 'Patch') color = 'green';
+  else if (type === 'UTP') color = 'orange';
+
+  line.setAttribute("stroke", color);
+  line.setAttribute("stroke-width", "2");
+
+  label.setAttribute("class", "cable-label");
+  label.textContent = type;
+
+  removeMark.setAttribute("class", "cable-remove");
+  removeMark.textContent = "✖";
+  removeMark.addEventListener('click', () => {
+    svg.removeChild(line);
+    svg.removeChild(label);
+    svg.removeChild(removeMark);
+    cables = cables.filter(c => c.line !== line);
+  });
+
+  svg.appendChild(line);
+  svg.appendChild(label);
+  svg.appendChild(removeMark);
+
+  cables.push({ from, to, line, label, removeMark });
+  updateCables();
+}
+
+function updateCables() {
+  cables.forEach(({ from, to, line, label, removeMark }) => {
+    const x1 = from.offsetLeft + from.offsetWidth / 2;
+    const y1 = from.offsetTop + from.offsetHeight / 2;
+    const x2 = to.offsetLeft + to.offsetWidth / 2;
+    const y2 = to.offsetTop + to.offsetHeight / 2;
+    line.setAttribute("x1", x1);
+    line.setAttribute("y1", y1);
+    line.setAttribute("x2", x2);
+    line.setAttribute("y2", y2);
+    label.setAttribute("x", (x1 + x2) / 2);
+    label.setAttribute("y", (y1 + y2) / 2 - 5);
+    removeMark.setAttribute("x", (x1 + x2) / 2 + 10);
+    removeMark.setAttribute("y", (y1 + y2) / 2 - 10);
+  });
+}
+</script>
+</body>
+</html>
