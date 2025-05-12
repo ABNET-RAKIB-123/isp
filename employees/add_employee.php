@@ -1,4 +1,7 @@
 <?php
+// ✅ Enable error reporting
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 
 // 🔒 Check login
@@ -16,14 +19,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = trim($_POST['phone']);
     $password = md5($_POST['password']); // ✅ MD5 hash
     $role = $_POST['role'] ?? 'support';
+    $router_owner_id = trim($_POST['router_owner_id']);
+    // $router_id = trim($_POST['client_id']);
 
     if (!empty($name) && !empty($email) && !empty($password)) {
-        $stmt = $conn->prepare("INSERT INTO employees (name, email, phone, password, role) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $name, $email, $phone, $password, $role);
+        // $router_owner_id = $_POST['router_owner_id'] ?? null;
+        // $stmt = $conn->prepare("UPDATE routers SET owner_id=? WHERE id=?");
+        // $stmt->bind_param("ii", $router_owner_id, $router_id);
+
+        $stmt = $conn->prepare("INSERT INTO employees (access_if, name, email, phone, password, role) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssss", $router_owner_id, $name, $email, $phone, $password, $role);
         $stmt->execute();
         $success = "✅ Employee added successfully!";
     } else {
         $error = "❌ All fields are required.";
+    }
+}
+$routerOwners = [];
+$result = $conn->query("SELECT id, owner_id, router_name FROM routers ORDER BY id");
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $routerOwners[] = $row;
     }
 }
 require_once '../includes/header.php';
@@ -53,6 +69,18 @@ require_once '../includes/sidebar.php';
         <div class="mb-3">
             <label>Password</label>
             <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Router Owner</label>
+            <select name="router_owner_id" class="form-select">
+                <option value="">-- Select Router Owner --</option>
+                <?php foreach ($routerOwners as $owner): ?>
+                    <option value="<?= htmlspecialchars($owner['id']) ?>">
+                        <?= htmlspecialchars($owner['router_name']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
         </div>
 
         <!-- Only admin can choose role -->
