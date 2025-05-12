@@ -30,12 +30,12 @@ $sql = "SELECT * FROM employees $where_sql ORDER BY id DESC";
 $result = $conn->query($sql);
 ?>
 
-<div class="container p-4">
+<div class="container-fluid p-4">
     <h3>Employees</h3>
 
     <!-- Role filter form -->
-    <form method="POST" class="row g-3 mb-3">
-        <div class="col-md-4">
+    <form method="POST">
+    <div class="col-12 col-sm-6 col-md-3 mb-2">
             <label for="role">Filter by Role</label>
             <select name="role" class="form-select" onchange="this.form.submit()">
                 <option value="">-- All Roles --</option>
@@ -47,7 +47,7 @@ $result = $conn->query($sql);
     </form>
 
     <!-- Employee Table -->
-    <table class="table table-bordered">
+    <table class="table table-responsive">
         <thead class="table-dark">
             <tr>
                 <th>ID</th>

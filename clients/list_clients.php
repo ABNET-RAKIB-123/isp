@@ -115,7 +115,7 @@ require_once '../includes/sidebar.php';
     </div>
 
     <div style="overflow-x: auto; width: 100%;">
-    <table id="clientTable" class="table table-bordered nowrap" style="width: 100%;">
+    <table id="clientTable" class="table table-hover nowrap" style="width: 100%;">
 
             <thead class="table-dark">
             <tr>
