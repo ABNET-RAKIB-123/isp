@@ -80,7 +80,7 @@ require_once '../includes/sidebar.php';
 
 <div class="container-fluid p-4">
     <h3>Clients</h3>
-    <div class="row mb-3">
+    <div class="row">
         <div class="col-12 col-sm-6 col-md-3 mb-2">
             <label>Server</label>
             <select id="serverFilter" class="form-select">
@@ -114,20 +114,20 @@ require_once '../includes/sidebar.php';
         </div>
     </div>
 
-    <div style="overflow-x: auto; width: 100%;">
-    <table id="clientTable" class="table table-hover nowrap" style="width: 100%;">
+    <div class="rounded-lg shadow" style="overflow-x: auto; width: 100%;">
+    <table id="clientTable" class="table table-hover nowrap text-center" style="width: 100%;">
 
             <thead class="table-dark">
             <tr>
-                <th>#</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Mobile</th>
-                <th>PPPoE USERS</th>
-                <th>Status</th>
-                <th>M.S</th>
-                <th>Billing</th>
-                <th>Actions</th>
+                <th class="text-center">#</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">Name</th>
+                <th class="text-center">Mobile</th>
+                <th class="text-center">PPPoE USERS</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">M.S</th>
+                <th class="text-center">Billing</th>
+                <th class="text-center">Actions</th>
             </tr>
             </thead>
         </table>
