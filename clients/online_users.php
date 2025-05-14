@@ -120,7 +120,7 @@ $offlineCount = $totalCount - $onlineCount;
     </div>
 
     <!-- Table now full-width and responsive -->
-    <div class="table-responsive">
+    <div class="table-responsive rounded-lg shadow">
         <table class="table table-bordered table-striped w-100">
             <thead class="table-dark">
                 <tr>

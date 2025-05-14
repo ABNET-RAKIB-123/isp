@@ -67,7 +67,7 @@ if ($API->connect($router['router_ip'], $router['router_username'], $router['rou
         <a href="online_users.php" class="btn btn-secondary btn-sm">&larr; Back</a>
     </div>
 
-    <table class="table table-bordered">
+    <table class="table table-bordered rounded-lg shadow">
         <tr>
             <th>Status</th>
             <td>

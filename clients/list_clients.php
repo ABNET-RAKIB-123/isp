@@ -126,7 +126,7 @@ require_once '../includes/sidebar.php';
                 <th class="text-center">PPPoE USERS</th>
                 <th class="text-center">Status</th>
                 <th class="text-center">M.S</th>
-                <th class="text-center">Billing</th>
+                <th cass="text-center">Billing</th>
                 <th class="text-center">Actions</th>
             </tr>
             </thead>
@@ -184,7 +184,7 @@ $(document).ready(function () {
             {
                 data: null,
                 render: row => row.billing_status === 'paid'
-                    ? `<a href="#" class="btn btn-sm btn-primary" onclick="submitPost('bill_receive.php', { id: '${row.client_id}' })">Pay</a><span class="badge bg-success">Paid</span>`
+                    ? `<a href="#" class="btn btn-sm btn-primary" style="margin-right: 10px"; onclick="submitPost('bill_receive.php', { id: '${row.client_id}' })">Pay</a><span class="badge bg-success">Paid</span>`
                     : row.can_payment
                     ? `<a href="#" class="btn btn-sm btn-primary" onclick="submitPost('bill_receive.php', { id: '${row.client_id}' })">Pay</a><span class="badge bg-success">Pay</span>`
                     : ''
