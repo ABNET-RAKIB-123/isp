@@ -102,10 +102,39 @@ $total_offline = $total_clients - $total_online;
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Dashboard</h2>
-        <div class="form-check form-switch mb-4">
+        <!-- <div class="form-check form-switch mb-4">
             <input class="form-check-input" type="checkbox" id="autoRefreshToggle">
             <label class="form-check-label" for="autoRefreshToggle">🛠️ Auto Suspend System</label>
-        </div>
+        </div> -->
+
+
+
+        <?php
+// Connect to DB
+
+// Get current status
+$status = $conn->query("SELECT value FROM settings WHERE `key` = 'auto_suspend_on'")->fetch_assoc()['value'];
+?>
+
+<form method="post">
+    <input type="hidden" name="toggle_suspend" value="1">
+    <button type="submit" class="btn btn-<?php echo ($status == '1') ? 'danger' : 'success'; ?>">
+        <?php echo ($status == '1') ? 'Turn OFF Auto Suspend' : 'Turn ON Auto Suspend'; ?>
+    </button>
+</form>
+
+<?php
+// Update on POST
+if (isset($_POST['toggle_suspend'])) {
+    $newStatus = ($status == '1') ? '0' : '1';
+    $conn->query("UPDATE settings SET value = '$newStatus' WHERE `key` = 'auto_suspend_on'");
+    header("Refresh:1");
+}
+?>
+
+
+
+
         <select id="routerSelect" class="form-control w-25">
             <?php foreach ($routers_list as $router): ?>
                 <option value="<?= $router['id'] ?>" <?= ($router['id'] == $router_id) ? 'selected' : '' ?>>

@@ -1,6 +1,14 @@
 <?php
-require_once '../includes/db.php';
-require_once '../api/mikrotik_api.php'; // Mikrotik API PHP class
+require_once(__DIR__ . '/../includes/db.php');
+require_once(__DIR__ . '/../api/mikrotik_api.php');
+
+// ✅ Auto Suspend ON/OFF Check
+$statusQuery = $conn->query("SELECT value FROM settings WHERE `key` = 'auto_suspend_on'");
+$autoSuspend = $statusQuery->fetch_assoc()['value'];
+
+if ($autoSuspend != '1') {
+    exit("Auto suspend is OFF.\n");
+}
 
 // Today's date
 $today = date('Y-m-d');
@@ -43,6 +51,18 @@ while ($client = $stmt->fetch_assoc()) {
                         ".id" => $secret_id,
                         "disabled" => "yes"
                     ]);
+                    // Remove active PPPoE sessions
+                    $active_sessions = $API->comm("/ppp/active/print", [
+                        "?name" => $username
+                    ]);
+
+                    if (!empty($active_sessions)) {
+                        foreach ($active_sessions as $session) {
+                            $API->comm("/ppp/active/remove", [
+                                ".id" => $session[".id"]
+                            ]);
+                        }
+                    }
 
                     // Update service_information status to 'inactive'
                     $conn->query("UPDATE service_information SET status = 'inactive' WHERE client_id = $client_id");
@@ -62,5 +82,3 @@ while ($client = $stmt->fetch_assoc()) {
 
 echo "Finished checking expired clients.";
 ?>
-
-
