@@ -1,0 +1,26 @@
+RewriteEngine On
+
+# Set base if your project is in /isp-management/
+RewriteBase /isp-management/
+
+# Disable directory listing everywhere
+Options -Indexes
+
+# Block access to /clients/ folder globally
+RewriteRule ^(clients|employees|admin|servers)(/|$) - [F,L]
+
+# Redirect root /isp-management/ URL to /admin/login.php
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/isp-management/?\s [NC]
+RewriteRule ^$ admin/login.php [R=302,L]
+
+# Allow access to real files and directories
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Remove .php extension from URLs if the PHP file exists
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# Redirect all other unknown URLs to /admin/login.php
+RewriteRule ^.*$ admin/login.php [L]

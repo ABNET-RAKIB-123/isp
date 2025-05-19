@@ -106,12 +106,7 @@ $total_offline = $total_clients - $total_online;
             <input class="form-check-input" type="checkbox" id="autoRefreshToggle">
             <label class="form-check-label" for="autoRefreshToggle">🛠️ Auto Suspend System</label>
         </div> -->
-
-
-
         <?php
-// Connect to DB
-
 // Get current status
 $status = $conn->query("SELECT value FROM settings WHERE `key` = 'auto_suspend_on'")->fetch_assoc()['value'];
 ?>
@@ -131,10 +126,6 @@ if (isset($_POST['toggle_suspend'])) {
     header("Refresh:1");
 }
 ?>
-
-
-
-
         <select id="routerSelect" class="form-control w-25">
             <?php foreach ($routers_list as $router): ?>
                 <option value="<?= $router['id'] ?>" <?= ($router['id'] == $router_id) ? 'selected' : '' ?>>
