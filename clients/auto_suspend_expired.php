@@ -13,13 +13,14 @@ if ($autoSuspend != '1') {
 // Today's date
 $today = date('Y-m-d');
 
-// Find all clients where expire_date < today
+// Find all clients where expire_date is today's date
 $stmt = $conn->query("
     SELECT si.username, si.client_id, si.profile_id, npi.server_id
     FROM service_information si
     JOIN network_product_information npi ON si.client_id = npi.client_id
-    WHERE si.expire_date < '$today'
+    WHERE si.expire_date = '$today'
 ");
+
 
 // Loop expired clients
 while ($client = $stmt->fetch_assoc()) {

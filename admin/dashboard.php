@@ -108,17 +108,17 @@ $total_offline = $total_clients - $total_online;
         </div> -->
         <?php
 // Get current status
-$status = $conn->query("SELECT value FROM settings WHERE `key` = 'auto_suspend_on'")->fetch_assoc()['value'];
-?>
-
-<form method="post">
-    <input type="hidden" name="toggle_suspend" value="1">
-    <button type="submit" class="btn btn-<?php echo ($status == '1') ? 'danger' : 'success'; ?>">
-        <?php echo ($status == '1') ? 'Turn OFF Auto Suspend' : 'Turn ON Auto Suspend'; ?>
-    </button>
-</form>
-
-<?php
+ $status = $conn->query("SELECT value FROM settings WHERE `key` = 'auto_suspend_on'")->fetch_assoc()['value'];
+    if ($role === 'admin'): ?>
+        <form method="post">
+            <input type="hidden" name="toggle_suspend" value="1">
+            <button type="submit" 
+                    class="btn btn-<?= $status == '1' ? 'danger' : 'success' ?>" 
+                    title="<?= $status == '1' ? 'Click to disable auto suspension' : 'Click to enable auto suspension' ?>">
+                <?= $status == '1' ? 'OFF' : 'ON' ?>
+            </button>
+        </form>
+    <?php endif; 
 // Update on POST
 if (isset($_POST['toggle_suspend'])) {
     $newStatus = ($status == '1') ? '0' : '1';
